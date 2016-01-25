@@ -65,6 +65,7 @@ void nextGeneration(){
     }
     for(unsigned int i=0; i<colony_size; i++){
         chromosomes[i]=newc[i];
+        fitness[i]=0;
     }
 }
 
@@ -75,6 +76,11 @@ unsigned int getChromosome(unsigned int index){
     return 0;
 }
 
+//requires that every fitness up until the current has been correct ordering
 void setFitness (unsigned int index, unsigned int value){
-    fitness[index]=value;
+    if (index==0){
+        fitness[index]=value;
+    }else{
+        fitness[index]=value+fitness[index-1];
+    }
 }
