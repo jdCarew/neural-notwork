@@ -1,20 +1,20 @@
 #include "genetic.h"
 
-unsigned int genesize;
+unsigned int gene_size;
 unsigned int colony_size;
 int crossover_rate=900;
 int mutation_rate=900;
 unsigned long *chromosomes;
 unsigned int *fitness;
 
-void createColony(){
-    genesize=DEFAULTGENESIZE;
-    colony_size=DEFAULTCOLONY;
+void createColony(unsigned int genesize, unsigned int colonysize){
+    gene_size=genesize;
+    colony_size=colonysize;
     chromosomes = new unsigned long[colony_size];
     fitness = new unsigned int[colony_size];
     srand(time(NULL));
     for (unsigned int i=0; i<colony_size; i++){
-        chromosomes[i]=((rand() % ULONG_MAX)<<(genesize/2))|(rand() % ULONG_MAX);
+        chromosomes[i]=((rand() % ULONG_MAX)<<(gene_size/2))|(rand() % ULONG_MAX);
 
     }
 }
@@ -22,9 +22,9 @@ void createColony(){
 void printColony(){
     std::cout<<"Current Generation: ";
     for (unsigned int i=0; i<colony_size; i++){
-        std::cout<<hex<<chromosomes[i]<<" ";
+        std::cout<<std::hex<<chromosomes[i]<<" ";
     }
-    std::cout<<endl<<dec;
+    std::cout<<std::endl<<std::dec;
 }
 
 void nextGeneration(){
@@ -51,13 +51,13 @@ void nextGeneration(){
         }
         if (b==colony_size)b--;
         
-        for (j=0; j<genesize; j++){
+        for (j=0; j<gene_size; j++){
             if(rand()%1000 > crossover_rate){
                 break;
             }
         }
-        newc[i]=(chromosomes[a]&(ULONG_MAX<<j))|(chromosomes[b]&(ULONG_MAX>>(genesize-j)));
-        for(j=0; j<genesize; j++){
+        newc[i]=(chromosomes[a]&(ULONG_MAX<<j))|(chromosomes[b]&(ULONG_MAX>>(gene_size-j)));
+        for(j=0; j<gene_size; j++){
             if(rand() % 1000 > mutation_rate){
                 newc[i]=newc[i]^(1<<j);
             }
@@ -69,7 +69,7 @@ void nextGeneration(){
     }
 }
 
-unsigned int getChromosome(unsigned int index){
+long unsigned int getChromosome(unsigned int index){
     if(index<colony_size){
         return chromosomes[index];
     }

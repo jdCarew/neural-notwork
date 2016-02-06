@@ -9,7 +9,7 @@
 #define ULONG_MAX 0xFFFFFFFFFFFFFFFF
 #define ULONG_ALMOSTMAX 0x0FFFFFFFFFFFFFFF
 
-void createColony ( );
+void createColony (unsigned int genesize=DEFAULTGENESIZE, unsigned int colonysize=DEFAULTCOLONY);
 
 void nextGeneration();
 

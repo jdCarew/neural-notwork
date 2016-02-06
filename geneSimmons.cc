@@ -26,19 +26,33 @@ unsigned int calculateFitness(unsigned long chromosome){
 }
 #endif
 
+void usage(){
+    cout<<"GeneSimmons [desiredGenerations] [desiredColonies]"<<endl;
+}
+
 int main( int argc, char *argv[] ) {
-    createColony();
+    //setting parameters
+    unsigned int desiredColonies=8;
+    unsigned int desiredGenerations=10;
+    if (argc>=2){
+        desiredGenerations=atoi(argv[1]);
+    } 
+    if (argc>=3){
+        desiredColonies=atoi(argv[2]);
+    }
+    createColony(64, desiredColonies);
 
     printColony();
 
-    for (unsigned int generation=0; generation<10; generation++){
+    for (unsigned int generation=0; generation<desiredGenerations; generation++){
                 
-        for(unsigned int i=0; i<4; i++){
+        for(unsigned int i=0; i<desiredColonies; i++){
             setFitness(i,calculateFitness(getChromosome(i)));
         }
         
         nextGeneration();
 
-        printColony();
+//        printColony();
     }
+    printColony();
 } // main
