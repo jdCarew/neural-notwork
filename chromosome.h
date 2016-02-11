@@ -1,3 +1,6 @@
+#ifndef __GENETIC__
+#define __GENETIC__
+
 #include <cstdlib>
 #include <iostream>
 #include <stdlib.h>     /* srand, rand */
@@ -18,3 +21,5 @@ void printColony();
 unsigned long getChromosome(unsigned int index);
 
 void setFitness (unsigned int index, unsigned int value);
+
+#endif

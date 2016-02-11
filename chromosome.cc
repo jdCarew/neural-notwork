@@ -1,4 +1,4 @@
-#include "genetic.h"
+#include "chromosome.h"
 
 unsigned int gene_size;
 unsigned int colony_size;

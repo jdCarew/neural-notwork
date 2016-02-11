@@ -5,7 +5,7 @@
 // Gene size default=42
 //
 // Examples:
-#include "genetic.h"
+#include "chromosome.h"
 
 #define NOTRANDOMFITNESS
 using namespace std;
