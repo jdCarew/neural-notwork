@@ -11,9 +11,9 @@ CXX = g++					# compiler
 CXXFLAGS = -g -Wall -MMD			# compiler flags
 MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}}	# makefile name
 
-OBJECTS = testChromosome.o network.o chromosome.o				# object files forming executable
+OBJECTS = testNetwork.o network.o chromosome.o				# object files forming executable
 DEPENDS = ${OBJECTS:.o=.d}			# substitute ".o" with ".d"
-EXEC = GeneSimmons					# executable name
+EXEC = neuralNotwork					# executable name
 
 ########## Targets ##########
 
