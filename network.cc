@@ -7,13 +7,28 @@ Neuron::Neuron(int numberOfInputs):numInputs(numberOfInputs){
     bias=RandFloat();
 }
 
-Neuron::Neuron(Neuron n1, double fit1, Neuron n2, double fit2){
-	assert(n1.numInputs==n2.numInputs && fit1 + fit2 >0);
+Neuron::Neuron(Neuron n1, Neuron n2){
+	assert(n1.numInputs==n2.numInputs);
 	numInputs=n1.numInputs;
-	for(int i=0; i<numInputs; i++){
-		weights.push_back((n1.weights[i]*fit1+n2.weights[i]*fit2)/(fit1+fit2));
+
+	int split=RandInt(0,numInputs);
+
+	for(int i=0; i<split; i++){
+		weights.push_back(n1.weights[i]);
 	}
-	bias=(n1.bias*fit1+n2.bias*fit2)/(fit1+fit2);
+	for(int i=split; i<numInputs; i++){
+		weights.push_back(n2.weights[i]);
+	}
+	for(std::vector<double>::iterator it=weights.begin(); it!=layers.end(); ++it){
+		if(RandFloat()>mutationRate){
+			(*it)*=RandInt(95,105)/100.0; //perturb by 5%
+		}
+	}
+	if (split*2>numInputs){
+		bias=n1.bias;
+	}else{
+		bias=n2.bias;
+	}
 }
 
 double Neuron::evaluate(std::vector<double> inputs){
@@ -38,7 +53,7 @@ Layer::Layer(int numberOfNeurons, int numberOfInputs):numNeurons(numberOfNeurons
     }
 }
 
-Layer::Layer(Layer L1, double fit1, Layer L2, double fit2){
+Layer::Layer(Layer L1, Layer L2){
 	assert(L1.numNeurons==L2.numNeurons);
 	numNeurons=L1.numNeurons;
 	for (int i=0; i<L1.numNeurons; i++){
@@ -89,7 +104,7 @@ Network::Network(Network N1, Network N2){
 	numberFinalOutputs=N1.numberFinalOutputs;
 	fitness=0;
 	for(int i=0; i<numLayers; i++){
-		layers.push_back(Layer(N1.layers[i],N1.fitness,N2.layers[i],N2.fitness));
+		layers.push_back(Layer(N1.layers[i],N2.layers[i]);
 	}
 }
 
