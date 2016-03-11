@@ -19,7 +19,7 @@ Neuron::Neuron(Neuron n1, Neuron n2){
 	for(int i=split; i<numInputs; i++){
 		weights.push_back(n2.weights[i]);
 	}
-	for(std::vector<double>::iterator it=weights.begin(); it!=layers.end(); ++it){
+	for(std::vector<double>::iterator it=weights.begin(); it!=weights.end(); ++it){
 		if(RandFloat()>mutationRate){
 			(*it)*=RandInt(95,105)/100.0; //perturb by 5%
 		}
@@ -57,7 +57,7 @@ Layer::Layer(Layer L1, Layer L2){
 	assert(L1.numNeurons==L2.numNeurons);
 	numNeurons=L1.numNeurons;
 	for (int i=0; i<L1.numNeurons; i++){
-		neurons.push_back(Neuron(L1.neurons[i],fit1,L2.neurons[i],fit2));
+		neurons.push_back(Neuron(L1.neurons[i],L2.neurons[i]));
 	}
 }
 
@@ -104,7 +104,7 @@ Network::Network(Network N1, Network N2){
 	numberFinalOutputs=N1.numberFinalOutputs;
 	fitness=0;
 	for(int i=0; i<numLayers; i++){
-		layers.push_back(Layer(N1.layers[i],N2.layers[i]);
+		layers.push_back(Layer(N1.layers[i],N2.layers[i]));
 	}
 }
 
@@ -125,4 +125,13 @@ void Network::printNetwork(){
 
 Network::~Network(){
 	layers.clear();
+}
+
+double Network::getFitness(){
+	return fitness;
+}
+
+void Network::setFitness(double fit){
+	fitness=fit;
+	return;
 }
