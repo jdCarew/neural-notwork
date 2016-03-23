@@ -13,6 +13,7 @@
 #define mutationRate (0.85)
 
 inline double RandFloat(){return (rand())/(RAND_MAX+1.0);}
+inline double RandFloat(double limit){return (rand())/(RAND_MAX/limit);}
 inline double RandDouble(){return (rand());}
 inline int    RandInt(int x,int y) {return rand()%(y-x+1)+x;}
 inline double RandomClamped()      {return RandFloat() - RandFloat();}
@@ -64,7 +65,7 @@ class Network{
     Network(Network N1, Network N2);
 
     std::vector<double> evaluate(double *inputs);
-
+    std::vector<double> evaluate(std::vector<double>inputs);
     void printNetwork();
     ~Network();
 };

@@ -1,13 +1,20 @@
 #include "species.h"
 
-inline double max( double a, double b) { return ((a<b)?b:a); }
-inline double min( double a, double b) { return ((a>b)?b:a); }
+//I did not write this funciton, I thought it would be part of the vector library, turns out its not but someone already wrote it. I neglected to get source but credit is not mine
+double vectorDistance(std::vector<double>::iterator first, std::vector<double>::iterator last, std::vector<double>::iterator first2) {
+  double ret = 0.0;
+  while (first != last) {
+    double dist = (*first++) - (*first2++);
+    ret += dist * dist;
+  }
+  return ret > 0.0 ? sqrt(ret) : 0.0;
+}
 
-Species::Species(unsigned int size, int numLayers, int * layerSizes):size(size){
+Species::Species(unsigned int size, int numLayers, int * layerSizes, int compute):size(size),computeGenerations(compute){
 	for (unsigned int i=0; i<size; i++){
 		members.push_back(Network(numLayers, layerSizes));
 	}
-	currentGeneration=0;
+	currentGeneration=1;
 	fitnessRecordsGeneration=0;
 }
   
@@ -15,10 +22,10 @@ void Species::updateFitnessRecords(){
 	totalFitness=0.0;
 	lowFitness=members[0].getFitness();
 	highFitness=members[0].getFitness();
-	for (std::vector<Network>::iterator it=members.begin(); it!=members.end(); ++it){
-		totalFitness+=(*it).getFitness();
-		lowFitness=min(lowFitness,(*it).getFitness());
-		highFitness=max(highFitness,(*it).getFitness());
+	for (unsigned int i=0; i<size; i++){
+		totalFitness+=members[i].getFitness();
+		lowFitness=min(lowFitness,members[i].getFitness());
+		highFitness=max(highFitness,members[i].getFitness());
 	}
 	avgFitness=totalFitness/size;
 	fitnessRecordsGeneration++;
@@ -26,46 +33,71 @@ void Species::updateFitnessRecords(){
 
 //cull to the top half by average, roulette pick 2, combine in both orders to make two kids, and add to members until original size
 void Species::newGeneration(){
-	std::vector<Network>continuing;
 	updateFitnessRecords();
-	for (unsigned int i=0; i<size; i++){
-		if (members[0].getFitness()>avgFitness){
-			continuing.push_back(members[0]);
+	for (std::vector<Network>::iterator it=members.begin(); it!=members.end(); ++it){
+		if ((*it).getFitness()<avgFitness){
+				
+			it=members.erase(it);
+
+			--it;//correct for the removed one, might give issues if removing the first element but is recommended online
 		}
 	}
-	members=continuing;
-	updateFitnessRecords();
 
+	updateFitnessRecords();
 	//do it this way to avoid a copy constructor, note this is still only n^2 which is unavoidable due to the roulette
 	while(members.size()<size){
-		int pick=RandInt(0,totalFitness);
+		int pick=RandFloat(totalFitness);
 		for (unsigned int i=0;i<members.size(); i++){
-			pick-=members[i].getFitness();
-			if(pick<0){
-				pick=RandInt(0,totalFitness);
+			if(pick<members[i].getFitness()){
+				pick=RandFloat(totalFitness);
 				for (unsigned int j=0; i<members.size(); i++){
-					pick-=members[j].getFitness();
-					if(pick<0){
+					if(pick<members[j].getFitness()){
 						members.push_back(Network(members[i],members[j]));
 						if(members.size()<size){
 							members.push_back(Network(members[j],members[i]));
 						}
 						break;
 					}
+					pick-=members[j].getFitness();
 				}
 				break;
 			}
+			pick-=members[i].getFitness();
 		}
 	}
 	currentGeneration++;
 }
 
 void Species::runLifecycle(){
+	std::vector<double> testData(4,1);//need something for this shit
+	std::vector<double> expectedResult(4,1);
+	for (std::vector<Network>::iterator it=members.begin(); it!=members.end(); ++it){
+			std::vector<double>results=(*it).evaluate(testData);
 
+		(*it).setFitness(vectorDistance(expectedResult.begin(),expectedResult.end(),results.begin()));
+	}
 }
 
 void Species::update(){
-	
+	for(int i=0; i<computeGenerations; i++){
+		runLifecycle();
+		printStats();
+		newGeneration();
+	}
+}
+
+void Species::printStats(){
+	if( currentGeneration != fitnessRecordsGeneration){
+		updateFitnessRecords();
+	}
+	std::cout<<"Generation: "<<currentGeneration<<std::endl;
+	std::cout<<"Best:    "<<highFitness<<std::endl;
+	std::cout<<"Average: "<<avgFitness<<std::endl;
+	std::cout<<"Low:     "<<lowFitness<<std::endl;
+	/*
+	for(unsigned int j=0; j<size;++j){
+		members[j].printNetwork();
+	}*/
 }
 
 double Species::getTotalFitness(){

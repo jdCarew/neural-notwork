@@ -7,6 +7,9 @@
 
 #define eventsInLifeCycle 4
 
+inline double max( double a, double b) { return ((a<b)?b:a); }
+inline double min( double a, double b) { return ((a>b)?b:a); }
+
 class Species{
 	std::vector<Network> members;
 	unsigned int size;
@@ -17,11 +20,12 @@ class Species{
 	int fitnessRecordsGeneration;
 
 	int currentGeneration;
+	int computeGenerations;
 
 	void updateFitnessRecords();
 
   public:
-  	Species(unsigned int size, int numLayers, int * layerSizes);
+  	Species(unsigned int size, int numLayers, int * layerSizes, int compute=10);
   	//Although it could be advantageous to have layerSizes vary, that would not work because the genetic algorithm would fail
   	//In fact, keeping to the nameSake, the layerSize as the genetic code it makes more sense for different species to have different layer sizes
   	//That said, it would work to have each species determine it's own layer size, for now accept it as assigned
@@ -34,6 +38,8 @@ class Species{
 
   	//update loop runs the lifecycles on each of the members of a species, the lifecycle will rank their fitness, and then once
   	void update();
+
+  	void printStats();
 
   	double getTotalFitness();
   	double getHighFitness();

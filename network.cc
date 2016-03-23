@@ -116,7 +116,15 @@ std::vector<double> Network::evaluate(double * inputs){
 	return myinputs;
 }
 
+std::vector<double> Network::evaluate(std::vector<double> inputs){
+	for (std::vector<Layer>::iterator it=layers.begin(); it!=layers.end(); ++it){
+		inputs=(*it).evaluate(inputs);
+	}
+	return inputs;
+}
+
 void Network::printNetwork(){
+	std::cout<<"Fitness: "<<fitness<<std::endl;
 	for(int i=0; i<numLayers; i++){
 		std::cout<<"Layer #"<<i<<":"<<std::endl;
 		layers[i].printLayer();
