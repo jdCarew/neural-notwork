@@ -33,11 +33,13 @@ class Species{
 	//called after we've run enough lifetime simulations to have an accurate enough fitness
   	void newGeneration();
 
+  	double compare(std::vector<double> expected, std::vector<double> results);
+
   	//run the network against the provided test data
-  	void runLifecycle();
+  	void runLifecycle(std::vector<double> input, std::vector<double> expected);
 
   	//update loop runs the lifecycles on each of the members of a species, the lifecycle will rank their fitness, and then once
-  	void update();
+  	void update(std::vector<std::vector<double> > testData, std::vector<std::vector<double> > expectedResults);
 
   	void printStats();
 

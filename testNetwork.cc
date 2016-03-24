@@ -6,7 +6,6 @@
 // Examples:
 #include "species.h"
 
-#define NOTRANDOMFITNESS
 using namespace std;
 
 void usage( char *argv[] ) {
@@ -20,15 +19,21 @@ void usage(){
 
 int main( int argc, char *argv[] ) {
     srand(time(0));
-	/*The first layer is implied input layer.
-	   Example: the first passed layer is size 5, then there will be 5 inputs passed to each neuron in that one
-	*/
+    
     int layerSizes[]={4,4};
     int numLayers=2;
     unsigned int numNetworks=40;
+    unsigned int numGenerations=15;
 
-    Species spec(numNetworks,numLayers,layerSizes,15);
+    vector<vector<double> > testData;
+    vector<vector<double> > expectedResults;
+    for (int i=0; i<15; i++){
+        testData.push_back(vector<double>(4,1));
+        expectedResults.push_back(vector<double>(4,1));
+    }
 
-    spec.update();
+    Species spec(numNetworks,numLayers,layerSizes,numGenerations);
+
+    spec.update(testData,expectedResults);
 
 }// main

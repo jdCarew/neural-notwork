@@ -11,16 +11,20 @@ CXX = g++					# compiler
 CXXFLAGS = -g -Wall -MMD			# compiler flags
 MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}}	# makefile name
 
-OBJECTS = testNetwork.o species.o network.o			# object files forming executable
+OBJECTS = species.o network.o			# object files forming executable
 DEPENDS = ${OBJECTS:.o=.d}			# substitute ".o" with ".d"
 EXEC = neuralNotwork					# executable name
 
+EXEC2 = semeion
 ########## Targets ##########
 
 .PHONY : clean					# not file names
 
-${EXEC} : ${OBJECTS}				# link step
+${EXEC} : testNetwork.o ${OBJECTS}				# link step
 	${CXX} ${CXXFLAGS} $^ -o $@		# additional object files before $^
+
+${EXEC2} : semeion.o ${OBJECTS}
+	${CXX} ${CXXFLAGS} $^ -o $@
 
 ${OBJECTS} : ${MAKEFILE_NAME}			# OPTIONAL : changes to this file => recompile
 
@@ -29,4 +33,4 @@ ${OBJECTS} : ${MAKEFILE_NAME}			# OPTIONAL : changes to this file => recompile
 -include ${DEPENDS}				# include *.d files containing program dependences
 
 clean :						# remove files that can be regenerated
-	rm -f ${DEPENDS} ${OBJECTS} ${EXEC}
+	rm -f ${DEPENDS} ${OBJECTS} ${EXEC} ${EXEC2} testNetwork.o testNetwork.d semeion.o semeion.d

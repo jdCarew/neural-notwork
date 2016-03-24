@@ -35,7 +35,7 @@ void Species::updateFitnessRecords(){
 void Species::newGeneration(){
 	updateFitnessRecords();
 	for (std::vector<Network>::iterator it=members.begin(); it!=members.end(); ++it){
-		if ((*it).getFitness()<avgFitness){
+		if ((*it).getFitness()>avgFitness){
 				
 			it=members.erase(it);
 
@@ -68,19 +68,38 @@ void Species::newGeneration(){
 	currentGeneration++;
 }
 
-void Species::runLifecycle(){
-	std::vector<double> testData(4,1);//need something for this shit
-	std::vector<double> expectedResult(4,1);
-	for (std::vector<Network>::iterator it=members.begin(); it!=members.end(); ++it){
-			std::vector<double>results=(*it).evaluate(testData);
+#ifdef EUCLID
+double Species::compare(std::vector<double> expected, std::vector<double> results){
+	return vectorDistance(expected.begin(),expected.end(),results.begin());
+}
+#else
+double Species::compare(std::vector<double> expected, std::vector<double> results){
+	for (int i=0; i<expected.size(); i++){
+		std::cout<<"Expected: "<<expected[i]<<" got: "<<results[i]<<std::endl;
+	}
+	std::cout<<std::endl;
+	return vectorDistance(expected.begin(),expected.end(),results.begin());
+}
+#endif
 
-		(*it).setFitness(vectorDistance(expectedResult.begin(),expectedResult.end(),results.begin()));
+
+void Species::runLifecycle(std::vector<double> input, std::vector<double> expected){
+	for (std::vector<Network>::iterator it=members.begin(); it!=members.end(); ++it){
+		std::vector<double>results=(*it).evaluate(input);
+		(*it).setFitness(compare(expected,results));
 	}
 }
 
-void Species::update(){
+void Species::update(std::vector<std::vector<double> > testData, std::vector<std::vector<double> > expectedResults){
+	assert (testData.size()==expectedResults.size());
+	unsigned int numEntries=testData.size();
+	unsigned int currentEntry=0;
+
 	for(int i=0; i<computeGenerations; i++){
-		runLifecycle();
+		for(unsigned int j=0; j<numEntries/computeGenerations; j++){
+			runLifecycle(testData[currentEntry],expectedResults[currentEntry]);
+			currentEntry++;
+		}
 		printStats();
 		newGeneration();
 	}
