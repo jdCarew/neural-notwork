@@ -54,7 +54,7 @@ int main( int argc, char *argv[] ) {
     }   
 
     Species spec(numNetworks,numLayers,layerSizes,numGenerations);
-
+    spec.verbose(1);
     spec.update(testData,expectedResults);
 
 }// main

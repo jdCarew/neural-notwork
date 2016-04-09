@@ -39,7 +39,7 @@ Neuron::Neuron(Neuron n1, Neuron n2){
 
 double Neuron::evaluate(std::vector<double> inputs){
 	assert(weights.size()==inputs.size());
-	return 1.0/(1.0+exp(-1.0*inner_product(weights.begin(),weights.end(),inputs.begin(),bias)));
+	return 1.0/(1.0+exp(-1.0*inner_product(weights.begin(),weights.end(),inputs.begin(),1)));
 }
 
 Neuron::~Neuron(){

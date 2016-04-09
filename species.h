@@ -19,7 +19,7 @@ class Species{
 	int currentGeneration;
 	int computeGenerations;
 
-	bool verboseOutput;
+	int verboseOutput;
 
 	void updateFitnessRecords();
 
@@ -42,7 +42,7 @@ class Species{
 
   	void printStats();
 
-  	void verbose();
+  	void verbose(int outputLevel);
 
   	double getTotalFitness();
   	double getHighFitness();
