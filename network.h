@@ -10,13 +10,16 @@
 #include <assert.h>
 #include <iostream>
 
-#define mutationRate (0.85)
+#define mutationRate (0.55)
 
 inline double RandFloat(){return (rand())/(RAND_MAX+1.0);}
 inline double RandFloat(double limit){return (rand())/(RAND_MAX/limit);}
 inline double RandDouble(){return (rand());}
 inline int    RandInt(int x,int y) {return rand()%(y-x+1)+x;}
 inline double RandomClamped()      {return RandFloat() - RandFloat();}
+
+inline double max( double a, double b) { return ((a<b)?b:a); }
+inline double min( double a, double b) { return ((a>b)?b:a); }
 
 struct Neuron{
     int numInputs;

@@ -14,20 +14,26 @@ Neuron::Neuron(Neuron n1, Neuron n2){
 	int split=RandInt(0,numInputs);
 
 	for(int i=0; i<split; i++){
-		weights.push_back(n1.weights[i]);
+		if (RandFloat()>mutationRate){
+			weights.push_back(min(n1.weights[i]*RandInt(90,110)/100.0,1));
+		}else{
+			weights.push_back(n1.weights[i]);
+		}
 	}
 	for(int i=split; i<numInputs; i++){
-		weights.push_back(n2.weights[i]);
-	}
-	for(std::vector<double>::iterator it=weights.begin(); it!=weights.end(); ++it){
-		if(RandFloat()>mutationRate){
-			(*it)*=RandInt(95,105)/100.0; //perturb by 5%
-		}
+		if (RandFloat()>mutationRate){
+			weights.push_back(min(n2.weights[i]*RandInt(90,110)/100.0,1));
+		}else{
+			weights.push_back(n2.weights[i]);
+		}	
 	}
 	if (split*2>numInputs){
 		bias=n1.bias;
 	}else{
 		bias=n2.bias;
+	}
+	if(RandFloat()>mutationRate){
+		bias=min(bias*RandInt(80,120)/100.0,5);
 	}
 }
 

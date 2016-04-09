@@ -7,9 +7,6 @@
 
 #define eventsInLifeCycle 4
 
-inline double max( double a, double b) { return ((a<b)?b:a); }
-inline double min( double a, double b) { return ((a>b)?b:a); }
-
 class Species{
 	std::vector<Network> members;
 	unsigned int size;
@@ -21,6 +18,8 @@ class Species{
 
 	int currentGeneration;
 	int computeGenerations;
+
+	bool verboseOutput;
 
 	void updateFitnessRecords();
 
@@ -42,6 +41,8 @@ class Species{
   	void update(std::vector<std::vector<double> > testData, std::vector<std::vector<double> > expectedResults);
 
   	void printStats();
+
+  	void verbose();
 
   	double getTotalFitness();
   	double getHighFitness();

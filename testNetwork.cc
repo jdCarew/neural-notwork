@@ -19,17 +19,18 @@ void usage(){
 
 int main( int argc, char *argv[] ) {
     srand(time(0));
-    
-    int layerSizes[]={4,4};
-    int numLayers=2;
-    unsigned int numNetworks=40;
+    int inputSize=1;
+    int outputSize=1;
+    int layerSizes[]={inputSize,3,outputSize};
+    int numLayers=3;
+    unsigned int numNetworks=4;
     unsigned int numGenerations=15;
 
     vector<vector<double> > testData;
     vector<vector<double> > expectedResults;
     for (int i=0; i<15; i++){
-        testData.push_back(vector<double>(4,1));
-        expectedResults.push_back(vector<double>(4,1));
+        testData.push_back(vector<double>(inputSize,1));
+        expectedResults.push_back(vector<double>(outputSize,1));
     }
 
     Species spec(numNetworks,numLayers,layerSizes,numGenerations);

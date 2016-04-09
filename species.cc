@@ -16,6 +16,11 @@ Species::Species(unsigned int size, int numLayers, int * layerSizes, int compute
 	}
 	currentGeneration=1;
 	fitnessRecordsGeneration=0;
+	verboseOutput=false;
+}
+
+void Species::verbose(){
+	verboseOutput=!verboseOutput;
 }
   
 void Species::updateFitnessRecords(){
@@ -35,12 +40,13 @@ void Species::updateFitnessRecords(){
 void Species::newGeneration(){
 	updateFitnessRecords();
 	for (std::vector<Network>::iterator it=members.begin(); it!=members.end(); ++it){
-		if ((*it).getFitness()>avgFitness){
+		if ((*it).getFitness()>avgFitness||((*it).getFitness()==avgFitness && RandInt(0,1))){
 				
 			it=members.erase(it);
 
 			--it;//correct for the removed one, might give issues if removing the first element but is recommended online
 		}
+
 	}
 
 	updateFitnessRecords();
@@ -69,12 +75,13 @@ void Species::newGeneration(){
 }
 
 #ifdef EUCLID
+//here's looking at Euclid
 double Species::compare(std::vector<double> expected, std::vector<double> results){
 	return vectorDistance(expected.begin(),expected.end(),results.begin());
 }
 #else
 double Species::compare(std::vector<double> expected, std::vector<double> results){
-	for (int i=0; i<expected.size(); i++){
+	for (unsigned int i=0; i<expected.size(); i++){
 		std::cout<<"Expected: "<<expected[i]<<" got: "<<results[i]<<std::endl;
 	}
 	std::cout<<std::endl;
@@ -86,7 +93,7 @@ double Species::compare(std::vector<double> expected, std::vector<double> result
 void Species::runLifecycle(std::vector<double> input, std::vector<double> expected){
 	for (std::vector<Network>::iterator it=members.begin(); it!=members.end(); ++it){
 		std::vector<double>results=(*it).evaluate(input);
-		(*it).setFitness(compare(expected,results));
+		(*it).setFitness(compare	(expected,results));
 	}
 }
 
@@ -110,13 +117,16 @@ void Species::printStats(){
 		updateFitnessRecords();
 	}
 	std::cout<<"Generation: "<<currentGeneration<<std::endl;
-	std::cout<<"Best:    "<<highFitness<<std::endl;
+	std::cout<<"High:    "<<highFitness<<std::endl;
 	std::cout<<"Average: "<<avgFitness<<std::endl;
 	std::cout<<"Low:     "<<lowFitness<<std::endl;
-	/*
-	for(unsigned int j=0; j<size;++j){
-		members[j].printNetwork();
-	}*/
+	
+	if (verboseOutput){
+		for(unsigned int j=0; j<size;++j){
+			members[j].printNetwork();
+		}
+	}
+	std::cout<<"========NEW GENERATION======="<<std::endl;
 }
 
 double Species::getTotalFitness(){
